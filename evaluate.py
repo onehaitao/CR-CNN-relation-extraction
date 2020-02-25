@@ -71,6 +71,9 @@ class Eval(object):
                 pred = pred.cpu().detach().numpy().reshape((-1, 1))
                 label = label.cpu().detach().numpy().reshape((-1, 1))
 
+                # During prediction time, a relation is classified as Other
+                # only if all actual classes have negative scores.
+                # Otherwise, it is classified with the class which has the largest score.
                 for i in range(pred.shape[0]):
                     if scores[i][0] < 0:
                         pred[i][0] = 0

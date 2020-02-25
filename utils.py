@@ -24,6 +24,7 @@ class WordEmbeddingLoader(object):
         word_vec = list()  # wordID to word embedding
 
         word2id['PAD'] = len(word2id)  # PAD character
+        word2id['UNK'] = len(word2id)  # out of vocabulary
 
         with open(self.path_word, 'r', encoding='utf-8') as fr:
             for line in fr:
@@ -33,8 +34,9 @@ class WordEmbeddingLoader(object):
                 word2id[line[0]] = len(word2id)
                 word_vec.append(np.asarray(line[1:], dtype=np.float32))
 
-        pad_emb = np.zeros([1, self.word_dim], dtype=np.float32)  # <pad> is initialize as zero
-        word_vec = np.concatenate((pad_emb, word_vec), axis=0)
+        special_emb = np.random.uniform(-1, 1, (2, self.word_dim))
+        special_emb[0] = 0  # <pad> is initialize as zero
+        word_vec = np.concatenate((special_emb, word_vec), axis=0)
         word_vec = word_vec.astype(np.float32).reshape(-1, self.word_dim)
         word_vec = torch.from_numpy(word_vec)
         return word2id, word_vec
@@ -112,7 +114,7 @@ class SemEvalDateset(Dataset):
         mask = mask[:length]
 
         for i in range(length):
-            words.append(self.word2id.get(sentence[i].lower(), self.word2id['*UNKNOWN*']))
+            words.append(self.word2id.get(sentence[i].lower(), self.word2id['UNK']))
             pos1.append(self.__get_relative_pos(i, e1_pos))
             pos2.append(self.__get_relative_pos(i, e2_pos))
 

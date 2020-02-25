@@ -51,10 +51,10 @@ class Config(object):
 
         # word embedding
         parser.add_argument('--embedding_path', type=str,
-                            default='./embedding/hlbl-embeddings-scaled.EMBEDDING_SIZE=50.txt',
+                            default='./embedding/glove.6B.300d.txt',
                             help='pre_trained word embedding')
         parser.add_argument('--word_dim', type=int,
-                            default=50,
+                            default=300,
                             help='dimension of word embedding')
 
         # train settings
@@ -72,7 +72,7 @@ class Config(object):
                             default=0,
                             help='num of gpu device, if -1, select cpu')
         parser.add_argument('--epoch', type=int,
-                            default=20,
+                            default=100,
                             help='max epoches during training')
 
         # hyper parameters
@@ -83,7 +83,7 @@ class Config(object):
                             default=128,
                             help='batch size')
         parser.add_argument('--lr', type=float,
-                            default=0.001,
+                            default=1.0,
                             help='learning rate')
         parser.add_argument('--max_len', type=int,
                             default=100,
@@ -92,12 +92,12 @@ class Config(object):
                             default=50,
                             help='max distance of position embedding')
         parser.add_argument('--pos_dim', type=int,
-                            default=5,
+                            default=70,
                             help='dimension of position embedding')
 
         # hyper parameters for cnn
         parser.add_argument('--filter_num', type=int,
-                            default=200,
+                            default=1000,
                             help='the number of filters in convolution')
         parser.add_argument('--window', type=int,
                             default=3,
@@ -113,7 +113,7 @@ class Config(object):
                             default=2.0,
                             help='scaling factor `gamma` in the CRCNN loss function')
         parser.add_argument('--L2_decay', type=float,
-                            default=1e-5,
+                            default=1e-3,
                             help='L2 weight decay')
 
         args = parser.parse_args()

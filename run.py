@@ -8,7 +8,7 @@ import torch.optim as optim
 
 from config import Config
 from utils import WordEmbeddingLoader, RelationLoader, SemEvalDataLoader
-from model import CRCNN, RankingLoss
+from model import CRCNN, PairwiseRankingLoss
 from evaluate import Eval
 
 
@@ -18,10 +18,14 @@ def print_result(predict_label, id2rel, start_idx=8001):
             fw.write('{}\t{}\n'.format(start_idx+i, id2rel[int(predict_label[i])]))
 
 
+def change_lr(optimizer, new_lr):
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = new_lr
+
+
 def train(model, criterion, loader, config):
     train_loader, dev_loader, _ = loader
-    # optimizer = optim.Adam(model.parameters(), lr=config.lr, weight_decay=config.L2_decay)
-    optimizer = optim.Adam(model.parameters(), lr=config.lr, weight_decay=0.001)
+    optimizer = optim.SGD(model.parameters(), lr=config.lr, weight_decay=1e-3)
 
     print(model)
     print('traning model parameters:')
@@ -33,7 +37,12 @@ def train(model, criterion, loader, config):
 
     eval_tool = Eval(config)
     min_f1 = -float('inf')
+    current_lr = config.lr
     for epoch in range(1, config.epoch+1):
+        if epoch > 5:
+            current_lr *= 0.95
+            change_lr(optimizer, current_lr)
+
         for step, (data, label) in enumerate(train_loader):
             model.train()
             data = data.to(config.device)
@@ -43,6 +52,7 @@ def train(model, criterion, loader, config):
             scores = model(data)
             loss = criterion(scores, label)
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 5)
             optimizer.step()
 
         _, train_loss, _ = eval_tool.evaluate(model, criterion, train_loader)
@@ -93,7 +103,7 @@ if __name__ == '__main__':
     print('--------------------------------------')
     model = CRCNN(word_vec=word_vec, class_num=class_num, config=config)
     model = model.to(config.device)
-    criterion = RankingLoss(class_num=class_num, config=config)
+    criterion = PairwiseRankingLoss(config=config)
 
     if config.mode == 1:  # train mode
         train(model, criterion, loader, config)

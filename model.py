@@ -13,7 +13,6 @@ class CRCNN(nn.Module):
         super().__init__()
         self.word_vec = word_vec
         self.class_num = class_num
-        self.device = config.device
 
         # hyper parameters and others
         self.max_len = config.max_len
@@ -52,22 +51,19 @@ class CRCNN(nn.Module):
         )
         self.maxpool = nn.MaxPool2d((self.max_len, 1))
         self.tanh = nn.Tanh()
-        self.relu = nn.ReLU()
         self.dropout = nn.Dropout(self.dropout_value)
-        # self.dense = nn.Linear(
-        #     in_features=self.filter_num,
-        #     out_features=self.class_num,
-        #     bias=True
-        # )
-        self.r = (6/(self.class_num + self.filter_num))**(0.5)
-        self.relation_weight = nn.Parameter(2 * self.r * (torch.rand(self.filter_num, self.class_num) - 0.5))
+        self.dense = nn.Linear(
+            in_features=self.filter_num,
+            out_features=self.class_num,
+            bias=False
+        )
 
         # initialize weight
-        init.xavier_normal_(self.pos1_embedding.weight)
-        init.xavier_normal_(self.pos2_embedding.weight)
-        init.xavier_normal_(self.conv.weight)
+        init.xavier_uniform_(self.pos1_embedding.weight)
+        init.xavier_uniform_(self.pos2_embedding.weight)
+        init.xavier_uniform_(self.conv.weight)
         init.constant_(self.conv.bias, 0.)
-        # init.xavier_normal_(self.dense.weight)
+        init.xavier_uniform_(self.dense.weight)
         # init.constant_(self.dense.bias, 0.)
 
     def encoder_layer(self, token, pos1, pos2):
@@ -85,13 +81,13 @@ class CRCNN(nn.Module):
         conv = conv.view(-1, self.filter_num, self.max_len)  # B*C*L
         mask = mask.unsqueeze(dim=1)  # B*1*L
         mask = mask.expand(-1, self.filter_num, -1)  # B*C*L
-        conv = conv.masked_fill_(mask.eq(0), float('-inf'))  # B*C*L
+        conv = conv.masked_fill(mask.eq(0), float('-inf'))  # B*C*L
         conv = conv.unsqueeze(dim=-1)  # B*C*L*1
         return conv
 
     def single_maxpool_layer(self, conv):
         pool = self.maxpool(conv)  # B*C*1*1
-        pool = pool.view(-1, self.filter_num)  # B*c
+        pool = pool.view(-1, self.filter_num)  # B*C
         return pool
 
     def forward(self, data):
@@ -100,38 +96,28 @@ class CRCNN(nn.Module):
         pos2 = data[:, 2, :].view(-1, self.max_len)
         mask = data[:, 3, :].view(-1, self.max_len)
         emb = self.encoder_layer(token, pos1, pos2)
-        # emb = self.dropout(emb)
+        emb = self.dropout(emb)
         conv = self.conv_layer(emb, mask)
-        # conv = self.relu(conv)
+        conv = self.tanh(conv)
         pool = self.single_maxpool_layer(conv)
-        # sentence_feature = self.linear(pool)
-        # sentence_feature = self.tanh(sentence_feature)
-        # sentence_feature = self.dropout(sentence_feature)
-        # logits = self.dense(sentence_feature)
         feature = self.dropout(pool)
-        feature = self.tanh(feature)
-        scores = torch.mm(feature, self.relation_weight)
+        scores = self.dense(feature)
         return scores
 
 
-class RankingLoss(nn.Module):
-    def __init__(self, class_num, config):
-        super(RankingLoss, self).__init__()
-        self.class_num = class_num
+class PairwiseRankingLoss(nn.Module):
+    def __init__(self, config):
+        super().__init__()
         self.margin_positive = config.margin_positive
         self.margin_negative = config.margin_negative
         self.gamma = config.gamma
-        self.device = config.device
 
     def forward(self, scores, labels):
-        labels = labels.view(-1, 1)
-        positive_mask = (torch.ones([labels.shape[0], self.class_num], device=self.device)
-                         * float('inf')).scatter_(1, labels, 0.0)
-        negative_mask = torch.zeros([labels.shape[0], self.class_num], device=self.device).scatter_(1, labels, float('inf'))
-        positive_scores, _ = torch.max(scores-positive_mask, dim=1)
-        negative_scores, _ = torch.max(scores-negative_mask, dim=1)
+        mask = F.one_hot(labels, scores.shape[-1])
+        positive_scores = scores.masked_fill(mask.eq(0), float('-inf')).max(dim=1)[0]
+        negative_scores = scores.masked_fill(mask.eq(1), float('-inf')).max(dim=1)[0]
         positive_loss = torch.log1p(torch.exp(self.gamma*(self.margin_positive-positive_scores)))
-        positive_loss[labels[:, 0] == 0] = 0.0
+        positive_loss[labels == 0] = 0.0  # exclusive `Other` loss
         negative_loss = torch.log1p(torch.exp(self.gamma*(self.margin_negative+negative_scores)))
         loss = torch.mean(positive_loss + negative_loss)
         return loss
