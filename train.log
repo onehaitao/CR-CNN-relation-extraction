@@ -1,0 +1,151 @@
+--------------------------------------
+some config:
+data_dir = ./data
+output_dir = ./output
+embedding_path = ./embedding/glove.6B.300d.txt
+word_dim = 300
+model_name = CRCNN
+mode = 1
+seed = 5782
+cuda = 0
+epoch = 100
+dropout = 0.5
+batch_size = 128
+lr = 1.0
+max_len = 100
+pos_dis = 50
+pos_dim = 70
+filter_num = 1000
+window = 3
+margin_positive = 2.5
+margin_negative = 0.5
+gamma = 2.0
+L2_decay = 0.001
+device = cuda:0
+model_dir = ./output/CRCNN
+--------------------------------------
+start to load data ...
+finish!
+--------------------------------------
+CRCNN(
+  (word_embedding): Embedding(400002, 300)
+  (pos1_embedding): Embedding(103, 70)
+  (pos2_embedding): Embedding(103, 70)
+  (conv): Conv2d(1, 1000, kernel_size=(3, 440), stride=(1, 1), padding=(1, 0))
+  (maxpool): MaxPool2d(kernel_size=(100, 1), stride=(100, 1), padding=0, dilation=1, ceil_mode=False)
+  (tanh): Tanh()
+  (dropout): Dropout(p=0.5, inplace=False)
+  (dense): Linear(in_features=1000, out_features=19, bias=False)
+)
+traning model parameters:
+word_embedding.weight :  torch.Size([400002, 300])
+pos1_embedding.weight :  torch.Size([103, 70])
+pos2_embedding.weight :  torch.Size([103, 70])
+conv.weight :  torch.Size([1000, 1, 3, 440])
+conv.bias :  torch.Size([1000])
+dense.weight :  torch.Size([19, 1000])
+--------------------------------------
+start to train the model ...
+[001] train_loss: 10.032 | dev_loss: 10.229 | micro f1 on dev: 0.2240 >>> save models!
+[002] train_loss: 6.093 | dev_loss: 6.556 | micro f1 on dev: 0.5267 >>> save models!
+[003] train_loss: 6.311 | dev_loss: 7.331 | micro f1 on dev: 0.4807 
+[004] train_loss: 4.414 | dev_loss: 5.311 | micro f1 on dev: 0.6505 >>> save models!
+[005] train_loss: 6.466 | dev_loss: 7.701 | micro f1 on dev: 0.6254 
+[006] train_loss: 2.993 | dev_loss: 4.357 | micro f1 on dev: 0.7344 >>> save models!
+[007] train_loss: 3.558 | dev_loss: 5.682 | micro f1 on dev: 0.6723 
+[008] train_loss: 3.010 | dev_loss: 4.804 | micro f1 on dev: 0.7327 
+[009] train_loss: 1.845 | dev_loss: 3.957 | micro f1 on dev: 0.7712 >>> save models!
+[010] train_loss: 1.587 | dev_loss: 3.693 | micro f1 on dev: 0.7928 >>> save models!
+[011] train_loss: 1.361 | dev_loss: 3.680 | micro f1 on dev: 0.7891 
+[012] train_loss: 1.693 | dev_loss: 4.217 | micro f1 on dev: 0.7640 
+[013] train_loss: 0.953 | dev_loss: 3.663 | micro f1 on dev: 0.7852 
+[014] train_loss: 0.763 | dev_loss: 3.404 | micro f1 on dev: 0.7964 >>> save models!
+[015] train_loss: 0.806 | dev_loss: 3.567 | micro f1 on dev: 0.7965 >>> save models!
+[016] train_loss: 0.764 | dev_loss: 3.603 | micro f1 on dev: 0.8019 >>> save models!
+[017] train_loss: 0.461 | dev_loss: 3.254 | micro f1 on dev: 0.8088 >>> save models!
+[018] train_loss: 0.421 | dev_loss: 3.373 | micro f1 on dev: 0.8012 
+[019] train_loss: 0.453 | dev_loss: 3.234 | micro f1 on dev: 0.8207 >>> save models!
+[020] train_loss: 0.291 | dev_loss: 3.344 | micro f1 on dev: 0.8028 
+[021] train_loss: 0.287 | dev_loss: 3.266 | micro f1 on dev: 0.8080 
+[022] train_loss: 0.138 | dev_loss: 3.222 | micro f1 on dev: 0.8071 
+[023] train_loss: 0.249 | dev_loss: 3.200 | micro f1 on dev: 0.8178 
+[024] train_loss: 0.132 | dev_loss: 2.966 | micro f1 on dev: 0.8219 >>> save models!
+[025] train_loss: 0.109 | dev_loss: 2.913 | micro f1 on dev: 0.8201 
+[026] train_loss: 0.091 | dev_loss: 2.936 | micro f1 on dev: 0.8181 
+[027] train_loss: 0.058 | dev_loss: 2.873 | micro f1 on dev: 0.8179 
+[028] train_loss: 0.068 | dev_loss: 2.882 | micro f1 on dev: 0.8200 
+[029] train_loss: 0.036 | dev_loss: 2.767 | micro f1 on dev: 0.8192 
+[030] train_loss: 0.034 | dev_loss: 2.763 | micro f1 on dev: 0.8263 >>> save models!
+[031] train_loss: 0.032 | dev_loss: 2.717 | micro f1 on dev: 0.8216 
+[032] train_loss: 0.034 | dev_loss: 2.737 | micro f1 on dev: 0.8192 
+[033] train_loss: 0.021 | dev_loss: 2.709 | micro f1 on dev: 0.8232 
+[034] train_loss: 0.033 | dev_loss: 2.626 | micro f1 on dev: 0.8291 >>> save models!
+[035] train_loss: 0.027 | dev_loss: 2.627 | micro f1 on dev: 0.8291 >>> save models!
+[036] train_loss: 0.033 | dev_loss: 2.650 | micro f1 on dev: 0.8275 
+[037] train_loss: 0.022 | dev_loss: 2.622 | micro f1 on dev: 0.8241 
+[038] train_loss: 0.028 | dev_loss: 2.613 | micro f1 on dev: 0.8276 
+[039] train_loss: 0.025 | dev_loss: 2.605 | micro f1 on dev: 0.8260 
+[040] train_loss: 0.020 | dev_loss: 2.591 | micro f1 on dev: 0.8254 
+[041] train_loss: 0.019 | dev_loss: 2.575 | micro f1 on dev: 0.8270 
+[042] train_loss: 0.021 | dev_loss: 2.577 | micro f1 on dev: 0.8274 
+[043] train_loss: 0.019 | dev_loss: 2.573 | micro f1 on dev: 0.8268 
+[044] train_loss: 0.019 | dev_loss: 2.549 | micro f1 on dev: 0.8273 
+[045] train_loss: 0.020 | dev_loss: 2.526 | micro f1 on dev: 0.8313 >>> save models!
+[046] train_loss: 0.017 | dev_loss: 2.517 | micro f1 on dev: 0.8295 
+[047] train_loss: 0.019 | dev_loss: 2.550 | micro f1 on dev: 0.8286 
+[048] train_loss: 0.019 | dev_loss: 2.539 | micro f1 on dev: 0.8296 
+[049] train_loss: 0.017 | dev_loss: 2.521 | micro f1 on dev: 0.8286 
+[050] train_loss: 0.018 | dev_loss: 2.510 | micro f1 on dev: 0.8266 
+[051] train_loss: 0.019 | dev_loss: 2.506 | micro f1 on dev: 0.8273 
+[052] train_loss: 0.019 | dev_loss: 2.487 | micro f1 on dev: 0.8293 
+[053] train_loss: 0.019 | dev_loss: 2.493 | micro f1 on dev: 0.8291 
+[054] train_loss: 0.019 | dev_loss: 2.476 | micro f1 on dev: 0.8320 >>> save models!
+[055] train_loss: 0.019 | dev_loss: 2.488 | micro f1 on dev: 0.8297 
+[056] train_loss: 0.018 | dev_loss: 2.479 | micro f1 on dev: 0.8319 
+[057] train_loss: 0.020 | dev_loss: 2.467 | micro f1 on dev: 0.8299 
+[058] train_loss: 0.017 | dev_loss: 2.480 | micro f1 on dev: 0.8312 
+[059] train_loss: 0.019 | dev_loss: 2.466 | micro f1 on dev: 0.8327 >>> save models!
+[060] train_loss: 0.019 | dev_loss: 2.461 | micro f1 on dev: 0.8308 
+[061] train_loss: 0.017 | dev_loss: 2.477 | micro f1 on dev: 0.8303 
+[062] train_loss: 0.018 | dev_loss: 2.458 | micro f1 on dev: 0.8327 >>> save models!
+[063] train_loss: 0.018 | dev_loss: 2.465 | micro f1 on dev: 0.8289 
+[064] train_loss: 0.017 | dev_loss: 2.467 | micro f1 on dev: 0.8318 
+[065] train_loss: 0.018 | dev_loss: 2.461 | micro f1 on dev: 0.8297 
+[066] train_loss: 0.018 | dev_loss: 2.455 | micro f1 on dev: 0.8301 
+[067] train_loss: 0.017 | dev_loss: 2.456 | micro f1 on dev: 0.8308 
+[068] train_loss: 0.019 | dev_loss: 2.452 | micro f1 on dev: 0.8309 
+[069] train_loss: 0.018 | dev_loss: 2.462 | micro f1 on dev: 0.8276 
+[070] train_loss: 0.018 | dev_loss: 2.453 | micro f1 on dev: 0.8309 
+[071] train_loss: 0.018 | dev_loss: 2.448 | micro f1 on dev: 0.8317 
+[072] train_loss: 0.018 | dev_loss: 2.447 | micro f1 on dev: 0.8300 
+[073] train_loss: 0.019 | dev_loss: 2.446 | micro f1 on dev: 0.8290 
+[074] train_loss: 0.018 | dev_loss: 2.444 | micro f1 on dev: 0.8318 
+[075] train_loss: 0.018 | dev_loss: 2.455 | micro f1 on dev: 0.8301 
+[076] train_loss: 0.018 | dev_loss: 2.451 | micro f1 on dev: 0.8284 
+[077] train_loss: 0.019 | dev_loss: 2.453 | micro f1 on dev: 0.8299 
+[078] train_loss: 0.019 | dev_loss: 2.447 | micro f1 on dev: 0.8298 
+[079] train_loss: 0.019 | dev_loss: 2.448 | micro f1 on dev: 0.8314 
+[080] train_loss: 0.018 | dev_loss: 2.443 | micro f1 on dev: 0.8293 
+[081] train_loss: 0.018 | dev_loss: 2.443 | micro f1 on dev: 0.8297 
+[082] train_loss: 0.017 | dev_loss: 2.445 | micro f1 on dev: 0.8303 
+[083] train_loss: 0.018 | dev_loss: 2.435 | micro f1 on dev: 0.8306 
+[084] train_loss: 0.018 | dev_loss: 2.437 | micro f1 on dev: 0.8315 
+[085] train_loss: 0.018 | dev_loss: 2.433 | micro f1 on dev: 0.8303 
+[086] train_loss: 0.018 | dev_loss: 2.438 | micro f1 on dev: 0.8294 
+[087] train_loss: 0.018 | dev_loss: 2.438 | micro f1 on dev: 0.8306 
+[088] train_loss: 0.019 | dev_loss: 2.437 | micro f1 on dev: 0.8289 
+[089] train_loss: 0.018 | dev_loss: 2.438 | micro f1 on dev: 0.8285 
+[090] train_loss: 0.018 | dev_loss: 2.435 | micro f1 on dev: 0.8300 
+[091] train_loss: 0.018 | dev_loss: 2.438 | micro f1 on dev: 0.8308 
+[092] train_loss: 0.018 | dev_loss: 2.439 | micro f1 on dev: 0.8299 
+[093] train_loss: 0.019 | dev_loss: 2.436 | micro f1 on dev: 0.8289 
+[094] train_loss: 0.019 | dev_loss: 2.433 | micro f1 on dev: 0.8300 
+[095] train_loss: 0.019 | dev_loss: 2.434 | micro f1 on dev: 0.8301 
+[096] train_loss: 0.018 | dev_loss: 2.439 | micro f1 on dev: 0.8289 
+[097] train_loss: 0.018 | dev_loss: 2.437 | micro f1 on dev: 0.8294 
+[098] train_loss: 0.019 | dev_loss: 2.436 | micro f1 on dev: 0.8292 
+[099] train_loss: 0.019 | dev_loss: 2.437 | micro f1 on dev: 0.8291 
+[100] train_loss: 0.019 | dev_loss: 2.437 | micro f1 on dev: 0.8293 
+--------------------------------------
+start test ...
+test_loss: 2.458 | micro f1 on test:  0.8327
