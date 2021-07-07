@@ -1,4 +1,6 @@
 # CR-CNN-relation-extraction
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/classifying-relations-by-ranking-with/relation-extraction-on-semeval-2010-task-8)](https://paperswithcode.com/sota/relation-extraction-on-semeval-2010-task-8?p=classifying-relations-by-ranking-with)
+
 Implementation of [Classifying Relations by Ranking with Convolutional Neural Networks](https://www.aclweb.org/anthology/P15-1061.pdf).
 
 ## Environment Requirements
